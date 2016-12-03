@@ -4,19 +4,16 @@ defmodule FizzBuzzTest do
 
   test "evauluate when a number is given returns the number" do
     assert FizzBuzz.evaluate(1) == "1"
-    assert FizzBuzz.evaluate(2) == "2"
     assert FizzBuzz.evaluate(4) == "4"
   end
 
   test "evaluate when a multiple of 3 is given returns fizz" do
     assert FizzBuzz.evaluate(3) == "fizz"
-    assert FizzBuzz.evaluate(6) == "fizz"
     assert FizzBuzz.evaluate(9) == "fizz"
   end
 
   test "evaluate when a multiple of 5 is given returns buzz" do
     assert FizzBuzz.evaluate(10) == "buzz"
-    assert FizzBuzz.evaluate(20) == "buzz"
     assert FizzBuzz.evaluate(25) == "buzz"
   end
 
