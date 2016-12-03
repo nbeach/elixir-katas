@@ -20,4 +20,9 @@ defmodule FizzBuzzTest do
     assert FizzBuzz.evaluate(25) == "buzz"
   end
 
+  test "evaluate when a multiple of 3 and 5 is given returns fizzbuzz" do
+    assert FizzBuzz.evaluate(15) == "fizzbuzz"
+    assert FizzBuzz.evaluate(30) == "fizzbuzz"
+  end
+
 end
