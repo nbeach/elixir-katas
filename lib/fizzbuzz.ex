@@ -1,7 +1,11 @@
 defmodule FizzBuzz do
 
   def evaluate(value) do
-    Integer.to_string value
+    if 0 == rem(value, 3) do
+      "fizz"
+    else
+      Integer.to_string value
+    end
   end
 
 end
