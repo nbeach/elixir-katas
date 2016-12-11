@@ -23,7 +23,11 @@ defmodule InfixToPostfix do
   end
 
   defp is_operator symbol do
-    symbol == '+' or symbol == '-'
+    symbol == '+' or
+    symbol == '-' or
+    symbol == '*' or
+    symbol == '/' or
+    symbol == '^'
   end
 
   defp pop stack do
