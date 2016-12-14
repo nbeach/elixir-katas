@@ -15,7 +15,7 @@ defmodule InfixToPostfix do
       is_operator symbol -> handle_operator symbol, operators, postfix
       '(' == symbol -> {postfix, operators ++ symbol}
       ')' == symbol -> handle_closing_parenthesis(operators, postfix)
-      true -> {handle_symbol(symbol, postfix), operators}
+      true -> {postfix ++ symbol, operators}
     end
 
     convert infix, postfix, operators
@@ -34,11 +34,7 @@ defmodule InfixToPostfix do
   defp handle_closing_parenthesis operators, postfix do
     {postfix, operators}
   end
-
-  defp handle_symbol symbol, postfix do
-    postfix ++ symbol
-  end
-
+  
   defp is_operator symbol do
     precedence(symbol) != nil
   end
