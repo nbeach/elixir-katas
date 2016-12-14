@@ -25,4 +25,8 @@ defmodule InfixToPostfixTest do
   test "convert() converts expressions with operators of mixed precedence" do
     assert InfixToPostfix.convert('a^b+c-d*e/f') == 'ab^c+de*f/-'
   end
+
+  test "convert() converts expressions with parenthesis" do
+    assert InfixToPostfix.convert('a*(b+c)') == 'abc+*'
+  end
 end

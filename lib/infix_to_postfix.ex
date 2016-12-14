@@ -11,20 +11,32 @@ defmodule InfixToPostfix do
   defp convert infix, postfix, operators do
     {symbol, infix} = dequeue infix
 
-    {postfix, operators} = if is_operator symbol do
-      stack_top = peek operators
-      if stack_top != '' and precedence(symbol) >= precedence(stack_top) do
-        {operators, operator} = pop operators
-        postfix = postfix ++ operator
-      end
-
-      {postfix, operators ++ symbol}
-    else
-      postfix = postfix ++ symbol
-      {postfix, operators}
+    {postfix, operators} = cond do
+      is_operator symbol -> handle_operator symbol, operators, postfix
+      '(' == symbol -> {postfix, operators ++ symbol}
+      ')' == symbol -> handle_closing_parenthesis(operators, postfix)
+      true -> {handle_symbol(symbol, postfix), operators}
     end
 
     convert infix, postfix, operators
+  end
+
+  defp handle_operator symbol, operators, postfix do
+    stack_top = peek operators
+    if stack_top != '' and precedence(symbol) >= precedence(stack_top) do
+      {operators, operator} = pop operators
+      postfix = postfix ++ operator
+    end
+
+    {postfix, operators ++ symbol}
+  end
+
+  defp handle_closing_parenthesis operators, postfix do
+    {postfix, operators}
+  end
+
+  defp handle_symbol symbol, postfix do
+    postfix ++ symbol
   end
 
   defp is_operator symbol do
