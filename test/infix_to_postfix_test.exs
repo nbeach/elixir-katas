@@ -21,4 +21,8 @@ defmodule InfixToPostfixTest do
   test "convert() converts expressions with only exponents" do
     assert InfixToPostfix.convert('a^b^c') == 'ab^c^'
   end
+
+  test "convert() converts expressions with operators of mixed precedence" do
+    assert InfixToPostfix.convert('a^b+c-d*e/f') == 'ab^c+de*f/-'
+  end
 end
