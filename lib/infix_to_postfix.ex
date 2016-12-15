@@ -9,8 +9,8 @@ defmodule InfixToPostfix do
   end
 
   defp convert infix, postfix, operators do
-    {symbol, infix} = dequeue infix
-
+    [symbol | infix] = infix
+    
     {postfix, operators} = cond do
       is_operator symbol -> handle_operator symbol, operators, postfix
       "(" == symbol -> {postfix, [symbol] ++ operators}
@@ -23,9 +23,9 @@ defmodule InfixToPostfix do
 
   defp handle_operator symbol, operators, postfix do
     if operators != [] do
-      stack_top = peek operators
+      [stack_top | _ ] = operators
       if stack_top != "" and precedence(symbol) >= precedence(stack_top) do
-        {operator, operators} = pop operators
+        [operator | operators ] = operators
         postfix = postfix <> operator
       end
     end
@@ -34,7 +34,7 @@ defmodule InfixToPostfix do
   end
 
   defp handle_closing_parenthesis operators, postfix do
-    {operator, operators} = pop operators
+    [operator | operators ] = operators
     if operator != "(" do
       handle_closing_parenthesis operators, postfix <> operator
     else
@@ -56,21 +56,6 @@ defmodule InfixToPostfix do
       "-" -> 3
       _ -> nil
     end
-  end
-
-  defp pop stack do
-    [top | stack ] = stack
-    {top, stack}
-  end
-
-  defp peek stack do
-    [top | _ ] = stack
-    top
-  end
-
-  defp dequeue queue do
-    [symbol | infix] = queue
-    {symbol, infix}
   end
 
 end
