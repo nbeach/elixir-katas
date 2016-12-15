@@ -1,11 +1,11 @@
 defmodule InfixToPostfix do
 
   def convert infix do
-    convert infix, '', ''
+    convert String.split(infix, " "), "", []
   end
 
-  defp convert(infix, postfix, operators) when infix == '' do
-    postfix ++ Enum.reverse(operators)
+  defp convert(infix, postfix, operators) when infix == [] do
+    postfix <> Enum.reduce(operators, fn(x, acc) -> acc <> x end)
   end
 
   defp convert infix, postfix, operators do
@@ -13,28 +13,30 @@ defmodule InfixToPostfix do
 
     {postfix, operators} = cond do
       is_operator symbol -> handle_operator symbol, operators, postfix
-      '(' == symbol -> {postfix, operators ++ symbol}
-      ')' == symbol -> handle_closing_parenthesis(operators, postfix)
-      true -> {postfix ++ symbol, operators}
+      "(" == symbol -> {postfix, [symbol] ++ operators}
+      ")" == symbol -> handle_closing_parenthesis(operators, postfix)
+      true -> {postfix <> symbol, operators}
     end
 
     convert infix, postfix, operators
   end
 
   defp handle_operator symbol, operators, postfix do
-    stack_top = peek operators
-    if stack_top != '' and precedence(symbol) >= precedence(stack_top) do
-      {operators, operator} = pop operators
-      postfix = postfix ++ operator
+    if operators != [] do
+      stack_top = peek operators
+      if stack_top != "" and precedence(symbol) >= precedence(stack_top) do
+        {operator, operators} = pop operators
+        postfix = postfix <> operator
+      end
     end
 
-    {postfix, operators ++ symbol}
+    {postfix, [symbol] ++ operators}
   end
 
   defp handle_closing_parenthesis operators, postfix do
-    {operators, operator} = pop operators
-    if operator != '(' do
-      handle_closing_parenthesis operators, postfix ++ operator
+    {operator, operators} = pop operators
+    if operator != "(" do
+      handle_closing_parenthesis operators, postfix <> operator
     else
       {postfix, operators}
     end
@@ -47,26 +49,28 @@ defmodule InfixToPostfix do
 
   defp precedence symbol do
     case symbol do
-      '^' -> 1
-      '*' -> 2
-      '/' -> 2
-      '+' -> 3
-      '-' -> 3
+      "^" -> 1
+      "*" -> 2
+      "/" -> 2
+      "+" -> 3
+      "-" -> 3
       _ -> nil
     end
   end
 
   defp pop stack do
-    Enum.split stack, Kernel.length(stack) - 1
+    [top | stack ] = stack
+    {top, stack}
   end
 
   defp peek stack do
-    {stack, top} = Enum.split stack, Kernel.length(stack) - 1
+    [top | _ ] = stack
     top
   end
 
   defp dequeue queue do
-    Enum.split queue, 1
+    [symbol | infix] = queue
+    {symbol, infix}
   end
 
 end
