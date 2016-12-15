@@ -32,9 +32,15 @@ defmodule InfixToPostfix do
   end
 
   defp handle_closing_parenthesis operators, postfix do
-    {postfix, operators}
+    {operators, operator} = pop operators
+    if operator != '(' do
+      handle_closing_parenthesis operators, postfix ++ operator
+    else
+      {postfix, operators}
+    end
+
   end
-  
+
   defp is_operator symbol do
     precedence(symbol) != nil
   end
