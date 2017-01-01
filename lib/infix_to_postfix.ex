@@ -10,7 +10,7 @@ defmodule InfixToPostfix do
 
   defp convert infix, postfix, operators do
     [symbol | infix] = infix
-    
+
     {postfix, operators} = cond do
       is_operator symbol -> handle_operator symbol, operators, postfix
       "(" == symbol -> {postfix, [symbol] ++ operators}
@@ -21,26 +21,45 @@ defmodule InfixToPostfix do
     convert infix, postfix, operators
   end
 
+  defp pop stack do
+    stack_top = if(stack != []) do
+      [stack_top | _ ] = stack
+      stack_top
+    else
+      nil
+    end
+
+    {stack_top, stack}
+  end
+
   defp handle_operator symbol, operators, postfix do
-    if operators != [] do
+    {stack_top, operators} = pop operators
+
+    {operators, postfix} = if(stack_top != nil) do
       [stack_top | _ ] = operators
-      if stack_top != "" and precedence(symbol) >= precedence(stack_top) do
-        [operator | operators ] = operators
-        postfix = postfix <> operator
+      cond do
+        precedence(symbol) >= precedence(stack_top) -> move_stack_top operators, postfix
+        true -> {operators, postfix}
       end
+    else
+       {operators, postfix}
     end
 
     {postfix, [symbol] ++ operators}
   end
 
+  defp move_stack_top stack, destination do
+      [top | stack ] = stack
+      destination = destination <> top
+      {stack, destination}
+  end
+
   defp handle_closing_parenthesis operators, postfix do
     [operator | operators ] = operators
-    if operator != "(" do
-      handle_closing_parenthesis operators, postfix <> operator
-    else
-      {postfix, operators}
+    cond do
+       operator != "(" -> handle_closing_parenthesis operators, postfix <> operator
+       true -> {postfix, operators}
     end
-
   end
 
   defp is_operator symbol do
