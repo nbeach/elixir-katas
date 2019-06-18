@@ -47,9 +47,9 @@ defmodule LearningTest do
 
   test "binary string interpolation" do
     string = "foo"
-    sigil = ~s(this string has "#{string}}")
+    interpolated = "this string has '#{string}'"
 
-    assert sigil = "this string has \"foo\""
+    assert interpolated == "this string has 'foo'"
   end
 
   test "char list string" do
@@ -77,6 +77,11 @@ defmodule LearningTest do
     assert Keyword.get(list, :one) == 2
   end
 
+  test "structs with required values" do
+    %User{ name: "John Doe", age: 5 }
+#    This fails to compile because age is missing
+#    %User{ name: "John Doe" }
+  end
 
 
 end
