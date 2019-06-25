@@ -1,24 +1,35 @@
 defmodule StateManager do
-  def start(store_name), do: Agent.start_link(fn -> VendingMachine.new() end, name: store_name)
-  def stop(store_name), do: Agent.stop(store_name)
+  defmacro __using__(opts) do
+    store_name = Keyword.get(opts, :store_name)
+    initial_state = Keyword.get(opts, :initial_state)
 
-  def wrap(operation, store_name), do: call_and_update(fn state -> operation.(state) end, store_name)
-  def wrap(operation, store_name, arg1), do: call_and_update(fn state -> operation.(state, arg1) end, store_name)
-  def wrap(operation, store_name, arg1, arg2), do: call_and_update(fn state -> operation.(state, arg1, arg2) end, store_name)
-  def wrap(operation, store_name, arg1, arg2, arg3), do: call_and_update(fn state -> operation.(state, arg1, arg2, arg3) end, store_name)
+    quote do
+      def start(), do: Agent.start_link(fn -> unquote(initial_state) end, name: unquote(store_name))
+      def stop(), do: Agent.stop(unquote(store_name))
 
-  defp call_and_update(operation, store_name) do
-    {result, new_state} = operation.(get_state(store_name))
-    update_state(store_name, new_state)
-    result
+      def wrap(operation), do: update_state_with(unquote(store_name), fn state -> operation.(state) end)
+      def wrap(operation, arg1), do: update_state_with(unquote(store_name), fn state -> operation.(state, arg1) end)
+      def wrap(operation, arg1, arg2), do: update_state_with(unquote(store_name), fn state -> operation.(state, arg1, arg2) end)
+      def wrap(operation, arg1, arg2, arg3), do: update_state_with(unquote(store_name), fn state -> operation.(state, arg1, arg2, arg3) end)
+
+      defp update_state_with(store_name, operation) do
+        prior_state = get_state(store_name)
+        {result, new_state} = operation.(prior_state)
+        update_state(store_name, new_state)
+        result
+      end
+
+      defp get_state(store_name) do
+        Agent.get(store_name, &(&1))
+      end
+
+      defp update_state(store_name, new_state) do
+        Agent.update(store_name, fn _ -> new_state end)
+      end
+
+    end
   end
 
-  defp get_state(store_name) do
-    Agent.get(store_name, &(&1))
-  end
 
-  defp update_state(store_name, new_state) do
-    Agent.update(store_name, fn _ -> new_state end)
-  end
 
 end
