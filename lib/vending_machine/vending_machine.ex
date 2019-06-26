@@ -2,12 +2,12 @@ defmodule VendingMachine do
   import Map, only: [put: 3, update!: 3]
 
   def new() do
-    %{ :coin_return => [], :credit => 0 }
+    %{ :coin_return => [], :credit => [] }
   end
 
   def display(state) do
     message = cond do
-      state.credit > 0 -> format_credit(state.credit)
+      !Enum.empty?(state.credit) -> format_credit(state.credit)
       true -> "INSERT COIN"
     end
 
@@ -19,7 +19,7 @@ defmodule VendingMachine do
     if(coin_value === :invalid) do
       {:invalid_coin, update!(state, :coin_return, &([coin] ++ &1))}
     else
-      {:ok, update!(state, :credit, &(&1 + coin_value))}
+      {:ok, update!(state, :credit, &(&1 ++ [coin]))}
     end
   end
 
@@ -27,8 +27,20 @@ defmodule VendingMachine do
     {state.coin_return, put(state, :coin_return, [])}
   end
 
+  def return_coins(state) do
+    new_state = state
+    |> update!(:coin_return, &(state.credit ++ &1))
+    |> put(:credit, [])
+
+    {nil, new_state}
+  end
+
   defp format_credit(credit) do
-    credit / 100 |> Float.to_string
+    total = credit
+    |> Enum.map(&get_coin_value/1)
+    |> Enum.reduce(0, fn next, total -> total + next end)
+
+     Float.to_string(total / 100)
   end
 
   defp get_coin_value(coin) do
