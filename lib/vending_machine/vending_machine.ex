@@ -1,4 +1,5 @@
 defmodule VendingMachine do
+  import Map, only: [put: 3, update!: 3]
 
   def new() do
     %{ :coin_return => [], :credit => 0 }
@@ -16,15 +17,15 @@ defmodule VendingMachine do
   def insert_coin(state, coin) do
     coin_value = get_coin_value(coin)
     if(coin_value === :invalid) do
-      {:invalid_coin, Map.update!(state, :coin_return, &([coin] ++ &1))}
+      {:invalid_coin, update!(state, :coin_return, &([coin] ++ &1))}
     else
-      {:ok,  Map.update!(state, :credit, &(&1 + coin_value))}
+      {:ok, update!(state, :credit, &(&1 + coin_value))}
     end
   end
 
   def empty_coin_return(state) do
     coins = state.coin_return
-    {coins, Map.put(state, :coin_return, [])}
+    {coins, put(state, :coin_return, [])}
   end
 
   defp format_credit(credit) do
