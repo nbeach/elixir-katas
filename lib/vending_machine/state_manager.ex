@@ -27,7 +27,7 @@ defmodule StateManager do
       def unquote(name)(unquote_splicing(arguments)) do
         state = Agent.get(unquote(store_name), &(&1))
         {result, new_state} = apply(unquote(module), unquote(name), [state, unquote_splicing(arguments)])
-        Agent.update(unquote(store_name), fn _ -> new_state end)
+        unless new_state === state, do: Agent.update(unquote(store_name), fn _ -> new_state end)
         result
       end
     end

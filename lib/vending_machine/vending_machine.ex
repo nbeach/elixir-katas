@@ -24,12 +24,11 @@ defmodule VendingMachine do
   end
 
   def empty_coin_return(state) do
-    coins = state.coin_return
-    {coins, put(state, :coin_return, [])}
+    {state.coin_return, put(state, :coin_return, [])}
   end
 
   defp format_credit(credit) do
-    Float.round(credit / 100, 2) |> Float.to_string
+    credit / 100 |> Float.to_string
   end
 
   defp get_coin_value(coin) do
