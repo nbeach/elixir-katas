@@ -83,5 +83,26 @@ defmodule LearningTest do
 #    %User{ name: "John Doe" }
   end
 
+  test "macros" do
+    defmodule A do
+
+      defmacro make_foo() do
+        quote do
+          def foo() do
+            "FOO!"
+          end
+        end
+      end
+
+    end
+
+    defmodule B do
+      import A
+
+      make_foo()
+    end
+
+    assert B.foo() === "FOO!"
+  end
 
 end
