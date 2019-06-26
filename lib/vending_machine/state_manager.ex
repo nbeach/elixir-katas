@@ -10,14 +10,14 @@ defmodule StateManager do
       def stop(), do: Agent.stop(unquote(store_name))
     end
 
-    IO.inspect(module_to_wrap)
+    [lifecycle_functions] ++ wrap_module_functions_with_state(module_to_wrap, store_name)
+  end
 
-    wrapped_functions = module_to_wrap.__info__(:functions)
+  defp wrap_module_functions_with_state(module, store_name) do
+    module.__info__(:functions)
     |> Keyword.to_list()
     |> Enum.filter(fn {_, arity} -> arity !== 0 end)
-    |> Enum.map(&(wrap_function_with_state(module_to_wrap, store_name, &1)))
-
-    [lifecycle_functions] ++ wrapped_functions
+    |> Enum.map(&(wrap_function_with_state(module, store_name, &1)))
   end
 
   defp wrap_function_with_state(module, store_name, {name, arity}) do
@@ -25,12 +25,9 @@ defmodule StateManager do
 
     quote do
       def unquote(name)(unquote_splicing(arguments)) do
-        get_state = fn store_name -> Agent.get(store_name, &(&1)) end
-        update_state = fn store_name, new_state -> Agent.update(store_name, fn _ -> new_state end) end
-
-        state = get_state.(unquote(store_name))
+        state = Agent.get(unquote(store_name), &(&1))
         {result, new_state} = apply(unquote(module), unquote(name), [state, unquote_splicing(arguments)])
-        update_state.(unquote(store_name), new_state)
+        Agent.update(unquote(store_name), fn _ -> new_state end)
         result
       end
     end
