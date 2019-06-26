@@ -3,6 +3,12 @@ defmodule StateManager do
     store_name = Keyword.get(opts, :store_name)
     initial_state = Keyword.get(opts, :initial_state)
 
+    [{name, arity} | _] = VendingMachine.__info__(:functions)
+    |> Keyword.to_list()
+
+#    IO.inspect(functions)
+
+
     quote do
       def start(), do: Agent.start_link(fn -> unquote(initial_state) end, name: unquote(store_name))
       def stop(), do: Agent.stop(unquote(store_name))
@@ -27,6 +33,10 @@ defmodule StateManager do
         Agent.update(store_name, fn _ -> new_state end)
       end
 
+
+      def unquote(name)() do
+        apply(VendingMachine, unquote(name), [get_state(unquote(store_name))])
+      end
     end
   end
 
