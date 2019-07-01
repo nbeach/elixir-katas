@@ -69,4 +69,83 @@ defmodule VendingMachineApplicationTest do
 
   end
 
+  test "tells what products are available" do
+    products = VendingMachineApplication.list_products()
+    assert products === [
+       %{ name: "Cola", price: 100 },
+       %{ name: "Chips", price: 50 },
+       %{ name: "Candy", price: 65 }
+     ]
+  end
+
+
+  describe "when a product is selected and it is in stock and there is sufficient credit" do
+
+    test "dispenses the product" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+
+      assert VendingMachineApplication.dispense("Chips") == true
+    end
+
+    test "displays thank you on the display" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+
+      assert VendingMachineApplication.display() == "THANK YOU"
+    end
+
+    test "displays insert coin after displaying the thank you" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+      VendingMachineApplication.display()
+
+      assert VendingMachineApplication.display() == "INSERT COIN"
+    end
+
+    test "depletes product inventory upon dispensing" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+
+      assert VendingMachineApplication.dispense("Chips") === false
+      assert VendingMachineApplication.display() == "SOLD OUT"
+    end
+
+    test "returns the remaining change" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Candy")
+
+      assert VendingMachineApplication.empty_coin_return() === [:dime]
+    end
+
+  end
+
+  describe "when a product is selected and it is in stock and there is insufficient credit" do
+
+    test "does not dispense the product" do
+      VendingMachineApplication.insert_coin(:quarter)
+      assert VendingMachineApplication.dispense("Candy") === false
+    end
+
+    test "displays the product price on the display" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Candy")
+      assert VendingMachineApplication.display() === "0.65"
+    end
+
+    test "returns to displaying the current credit after displaying the product price" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Candy")
+      VendingMachineApplication.display()
+
+      assert VendingMachineApplication.display() === "0.25"
+    end
+
+  end
+
 end

@@ -1,4 +1,4 @@
-defmodule StateManagerTest do
+defmodule StateStoreTest do
   use ExUnit.Case, async: true
 
   test "wraps a modules methods with state" do
@@ -19,8 +19,8 @@ defmodule StateManagerTest do
     end
 
     defmodule StatefulFoo do
-      use StateManager,
-          module: StateManagerTest.Foo,
+      use StateStore,
+          module: StateStoreTest.Foo,
           store_name: __MODULE__,
           initial_state: Foo.new()
     end

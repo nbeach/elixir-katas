@@ -1,4 +1,4 @@
-defmodule StateManager do
+defmodule StateStore do
 
   defmacro __using__(opts) do
     store_name = Keyword.get(opts, :store_name)
@@ -17,6 +17,7 @@ defmodule StateManager do
     module.__info__(:functions)
     |> Keyword.to_list()
     |> Enum.filter(fn {_, arity} -> arity !== 0 end)
+    |> Enum.filter(fn {name, _} -> name !== :new end)
     |> Enum.map(&(wrap_function_with_state(module, store_name, &1)))
   end
 

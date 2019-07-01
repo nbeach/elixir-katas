@@ -1,21 +1,20 @@
 defmodule VendingMachine do
   import Map, only: [put: 3, update!: 3]
 
-  def new() do
-    %{ :coin_return => [], :credit => [] }
+  def new(inventory) do
+    %{ :coin_return => [], :credit => [], :inventory => inventory, :message => nil }
   end
 
   def display(state) do
-    message = cond do
-      !Enum.empty?(state.credit) -> format_credit(state.credit)
-      true -> "INSERT COIN"
+    cond do
+      state.message !== nil -> {state.message, put(state, :message, nil)}
+      !Enum.empty?(state.credit) -> {format_credit(state.credit), state}
+      true -> {"INSERT COIN", state}
     end
-
-    {message, state}
   end
 
   def insert_coin(state, coin) do
-    coin_value = get_coin_value(coin)
+    coin_value = Coins.get_coin_value(coin)
     if(coin_value === :invalid) do
       {:invalid_coin, update!(state, :coin_return, &([coin] ++ &1))}
     else
@@ -35,21 +34,36 @@ defmodule VendingMachine do
     {nil, new_state}
   end
 
-  defp format_credit(credit) do
-    total = credit
-    |> Enum.map(&get_coin_value/1)
-    |> Enum.reduce(0, fn next, total -> total + next end)
-
-     Float.to_string(total / 100)
+  def list_products(state) do
+    {Inventory.list_products(state.inventory), state}
   end
 
-  defp get_coin_value(coin) do
-    case coin do
-      :quarter -> 25
-      :dime -> 10
-      :nickel -> 5
-      _ -> :invalid
+  def dispense(state, product_name) do
+    {item, updated_inventory} = Inventory.dispense_item(state.inventory, product_name)
+
+    cond do
+      item === nil -> {false, put(state, :message, "SOLD OUT")}
+      item.product.price > Coins.get_credit_value(state.credit) -> { false, put(state, :message,  format_value(item.product.price)) }
+      true -> {
+        true,
+        state
+        |> put(:inventory, updated_inventory)
+        |> update!(:coin_return, &(&1 ++ Coins.make_change(state.credit, item.product.price)))
+        |> put(:credit, [])
+        |> put(:message, "THANK YOU")
+      }
     end
+
+  end
+
+  defp format_credit(credit) do
+    credit
+    |> Coins.get_credit_value()
+    |> format_value()
+  end
+
+  defp format_value(value) do
+    Float.to_string(value / 100)
   end
 
 end
