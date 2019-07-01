@@ -148,4 +148,41 @@ defmodule VendingMachineApplicationTest do
 
   end
 
+  describe "when a product is selected and it is in stock and it is sold out" do
+
+    test "does not dispense the product" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      assert VendingMachineApplication.dispense("Chips") === false
+    end
+
+    test "displays sold out on the display" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+      assert VendingMachineApplication.display() === "SOLD OUT"
+    end
+
+    test "returns to displaying insert coin after displaying sold out" do
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.insert_coin(:quarter)
+      VendingMachineApplication.dispense("Chips")
+      VendingMachineApplication.display()
+
+      assert VendingMachineApplication.display() === "0.5"
+    end
+  end
+
 end

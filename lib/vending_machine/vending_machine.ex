@@ -44,16 +44,13 @@ defmodule VendingMachine do
     cond do
       item === nil -> {false, put(state, :message, "SOLD OUT")}
       item.product.price > Coins.get_credit_value(state.credit) -> { false, put(state, :message,  format_value(item.product.price)) }
-      true -> {
-        true,
-        state
+      true -> {true, state
         |> put(:inventory, updated_inventory)
         |> update!(:coin_return, &(&1 ++ Coins.make_change(state.credit, item.product.price)))
         |> put(:credit, [])
         |> put(:message, "THANK YOU")
       }
     end
-
   end
 
   defp format_credit(credit) do
