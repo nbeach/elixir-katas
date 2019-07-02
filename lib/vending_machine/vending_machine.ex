@@ -1,9 +1,8 @@
 defmodule VendingMachine do
   import Map, only: [put: 3, update!: 3]
 
-  def new(inventory) do
-    %{ :coin_return => [], :credit => [], :inventory => inventory, :message => nil }
-  end
+  @enforce_keys [:inventory]
+  defstruct coin_return: [], coins: [], credit: [], message: nil, inventory: []
 
   def display(state) do
     cond do
