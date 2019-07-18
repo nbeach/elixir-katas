@@ -1,7 +1,7 @@
 defmodule Inventory do
 
   def list_products(inventory) do
-    Enum.map(inventory, &(&1.product))
+    for item <- inventory, do: item.product
   end
 
   def dispense_item(inventory, name) do
@@ -13,12 +13,9 @@ defmodule Inventory do
   end
 
   defp decrement_item_quantity(inventory, item) do
-    Enum.map(inventory, fn current ->
-      cond do
-        current === item -> Map.update!(current, :quantity, &(&1 - 1))
-        true -> current
-      end
-    end)
+    for current <- inventory do
+      if (current === item), do: Map.update!(current, :quantity, &(&1 - 1)), else: current
+    end
   end
 
 end

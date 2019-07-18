@@ -50,16 +50,16 @@ defmodule VendingMachineServer do
 
   def handle_cast(:return_coins, state) do
     new_state = state
-    |> update!(:coin_return, &(state.credit ++ &1))
-    |> put(:credit, [])
+      |> update!(:coin_return, &(state.credit ++ &1))
+      |> put(:credit, [])
 
     {:noreply, new_state}
   end
 
   defp format_credit(credit) do
     credit
-    |> Coins.get_credit_value()
-    |> format_value()
+      |> Coins.get_credit_value()
+      |> format_value()
   end
 
   defp format_value(value) do

@@ -16,6 +16,7 @@ defmodule Coins do
     |> Enum.reduce(0, fn next, total -> total + next end)
   end
 
+  @spec get_coin_value(atom) :: atom | integer
   def get_coin_value(coin) do
     case coin do
       :quarter -> 25
@@ -24,6 +25,7 @@ defmodule Coins do
       _ -> :invalid
     end
   end
+
 
   defp change_for_coin(change_to_make, coin) do
     coin_value = get_coin_value(coin)
