@@ -4,6 +4,7 @@ defmodule VendingMachineServer do
 
   defstruct coin_return: [], coins: [], credit: [], message: nil, inventory: []
 
+  @impl true
   def init(state) do
     {:ok, state}
   end
