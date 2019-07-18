@@ -4,7 +4,7 @@ defmodule StateStoreTest do
   test "wraps a modules methods with state" do
     defmodule Foo do
       def new() do
-        %{ value: 5 }
+        %{value: 5}
       end
 
       def multiply(state, number) do
@@ -15,14 +15,13 @@ defmodule StateStoreTest do
       def get_value(state) do
         {state.value, state}
       end
-
     end
 
     defmodule StatefulFoo do
       use StateStore,
-          module: StateStoreTest.Foo,
-          store_name: __MODULE__,
-          initial_state: Foo.new()
+        module: StateStoreTest.Foo,
+        store_name: __MODULE__,
+        initial_state: Foo.new()
     end
 
     StatefulFoo.start()
@@ -33,5 +32,4 @@ defmodule StateStoreTest do
     assert doubled == 10
     assert changed_value == 10
   end
-
 end

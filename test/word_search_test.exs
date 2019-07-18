@@ -5,7 +5,7 @@ defmodule WordSearchTest do
     grid = [
       ["a", "b", "c"],
       ["o", "n", "e"],
-      ["a", "b", "c"],
+      ["a", "b", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (0,1), (1,1), (2,1)"
@@ -15,7 +15,7 @@ defmodule WordSearchTest do
     grid = [
       ["a", "b", "c"],
       ["e", "n", "o"],
-      ["a", "b", "c"],
+      ["a", "b", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (2,1), (1,1), (0,1)"
@@ -25,7 +25,7 @@ defmodule WordSearchTest do
     grid = [
       ["a", "o", "c"],
       ["a", "n", "c"],
-      ["a", "e", "c"],
+      ["a", "e", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (1,0), (1,1), (1,2)"
@@ -35,7 +35,7 @@ defmodule WordSearchTest do
     grid = [
       ["a", "e", "c"],
       ["a", "n", "c"],
-      ["a", "o", "c"],
+      ["a", "o", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (1,2), (1,1), (1,0)"
@@ -45,7 +45,7 @@ defmodule WordSearchTest do
     grid = [
       ["o", "b", "c"],
       ["a", "n", "c"],
-      ["a", "b", "e"],
+      ["a", "b", "e"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (0,0), (1,1), (2,2)"
@@ -55,7 +55,7 @@ defmodule WordSearchTest do
     grid = [
       ["e", "b", "c"],
       ["a", "n", "c"],
-      ["a", "b", "o"],
+      ["a", "b", "o"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (2,2), (1,1), (0,0)"
@@ -65,7 +65,7 @@ defmodule WordSearchTest do
     grid = [
       ["a", "b", "o"],
       ["a", "n", "c"],
-      ["e", "b", "c"],
+      ["e", "b", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (2,0), (1,1), (0,2)"
@@ -75,10 +75,9 @@ defmodule WordSearchTest do
     grid = [
       ["a", "b", "e"],
       ["a", "n", "c"],
-      ["o", "b", "c"],
+      ["o", "b", "c"]
     ]
 
     assert WordSearch.search("one", grid) == "one: (0,2), (1,1), (2,0)"
   end
-
 end

@@ -1,46 +1,45 @@
 defmodule LearningTest do
   use ExUnit.Case
 
-
   test "tuples" do
     tuple = {"one", 2}
     other = Tuple.append(tuple, "three")
     assert elem(other, 2) == "three"
   end
 
-
   test "lists" do
-    list = [1,2]
+    list = [1, 2]
     other = List.insert_at(list, 2, 3)
-    assert length(other)  == 3
+    assert length(other) == 3
     assert Enum.at(other, 2) == 3
   end
 
   test "list concat" do
     list1 = [1]
     list2 = [2]
-    assert list1 ++ list2 == [1,2]
+    assert list1 ++ list2 == [1, 2]
   end
 
   test "list recursive definition" do
     list = [1 | [2, 3]]
-    assert list == [1,2,3]
+    assert list == [1, 2, 3]
   end
 
   test "maps" do
-    map = %{ :key => "value", "foo" => "bar", 4 => 5}
+    map = %{:key => "value", "foo" => "bar", 4 => 5}
     assert map["foo"] == "bar"
-    assert map.key == "value" #Atom keys have a special accessor
+    # Atom keys have a special accessor
+    assert map.key == "value"
   end
 
   test "map update field" do
-    map = %{ :key => "value", "foo" => "bar", 4 => 5}
-    updated = %{ map | :key => "whoosh"}
+    map = %{:key => "value", "foo" => "bar", 4 => 5}
+    updated = %{map | :key => "whoosh"}
     assert updated.key == "whoosh"
   end
 
   test "map add field" do
-    map = %{ :key => "value", "foo" => "bar", 4 => 5}
+    map = %{:key => "value", "foo" => "bar", 4 => 5}
     updated = Map.put(map, :key, "whoosh")
     assert updated.key == "whoosh"
   end
@@ -65,11 +64,10 @@ defmodule LearningTest do
   end
 
   test "range map" do
-    range = Enum.map(1..3, fn(val) ->  val + 1 end)
+    range = Enum.map(1..3, fn val -> val + 1 end)
 
-    assert range == [2,3,4]
+    assert range == [2, 3, 4]
   end
-
 
   test "keyword lists" do
     list = [foo: "bar", one: 2]
@@ -78,14 +76,13 @@ defmodule LearningTest do
   end
 
   test "structs with required values" do
-    %User{ name: "John Doe", age: 5 }
-#    This fails to compile because age is missing
-#    %User{ name: "John Doe" }
+    %User{name: "John Doe", age: 5}
+    #    This fails to compile because age is missing
+    #    %User{ name: "John Doe" }
   end
 
   test "macros" do
     defmodule A do
-
       defmacro make_foo() do
         quote do
           def foo() do
@@ -93,7 +90,6 @@ defmodule LearningTest do
           end
         end
       end
-
     end
 
     defmodule B do
@@ -104,5 +100,4 @@ defmodule LearningTest do
 
     assert B.foo() === "FOO!"
   end
-
 end

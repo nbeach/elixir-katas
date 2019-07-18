@@ -1,25 +1,19 @@
-
-
-
-#foo = fn -> IO.puts "Hello world from Elixir" end
+# foo = fn -> IO.puts "Hello world from Elixir" end
 #
 #
-#spawn foo
-#spawn foo
-#spawn foo
+# spawn foo
+# spawn foo
+# spawn foo
 
-
-#parent = self()
+# parent = self()
 #
-#spawn fn ->
+# spawn fn ->
 #  send(parent, {:action, "do a thing"})
-#end
+# end
 
-
-#receive do
+# receive do
 #    {:action, action} -> IO.puts ~s(Action is: #{action})
 ##    {:world} -> "won't match"
-#end
+# end
 
-
-spawn_link fn -> raise "oops" end
+spawn_link(fn -> raise "oops" end)

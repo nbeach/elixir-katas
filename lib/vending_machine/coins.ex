@@ -1,5 +1,4 @@
 defmodule Coins do
-
   def make_change(credit, sale_price) do
     change_to_make = get_credit_value(credit) - sale_price
 
@@ -26,17 +25,17 @@ defmodule Coins do
     end
   end
 
-
   defp change_for_coin(change_to_make, coin) do
     coin_value = get_coin_value(coin)
     coin_count = div(change_to_make, coin_value)
     remaining_change_to_make = rem(change_to_make, coin_value)
 
-    coins = case coin_count do
-      0 -> []
-      _ -> Enum.map(1..coin_count, fn _ -> coin end)
-    end
+    coins =
+      case coin_count do
+        0 -> []
+        _ -> Enum.map(1..coin_count, fn _ -> coin end)
+      end
+
     {coins, remaining_change_to_make}
   end
-
 end
