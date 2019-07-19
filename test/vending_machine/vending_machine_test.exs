@@ -1,4 +1,4 @@
-defmodule VendingMachineClientTest do
+defmodule VendingMachineTest do
   use ExUnit.Case
 
   setup do
