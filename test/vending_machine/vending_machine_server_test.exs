@@ -1,9 +1,9 @@
-defmodule VendingMachineTest do
+defmodule VendingMachineServerTest do
   use ExUnit.Case
 
   setup do
     server = start_supervised!(VendingMachineServer)
-    VendingMachineClient.initialize_state(server, %VendingMachineServer{
+    VendingMachineClient.initialize_state(server, %VendingMachine{
       inventory: [
         %{product: %{name: "Cola", price: 100}, quantity: 1},
         %{product: %{name: "Chips", price: 50}, quantity: 1},
