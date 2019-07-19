@@ -1,9 +1,5 @@
 defmodule VendingMachineClient do
 
-  def start_link(inventory) do
-    GenServer.start_link(VendingMachineServer, inventory)
-  end
-
   def display(server) do
     GenServer.call(server, :display)
   end
@@ -26,6 +22,10 @@ defmodule VendingMachineClient do
 
   def dispense(server, product_name) do
     GenServer.call(server, {:dispense, product_name})
+  end
+
+  def initialize_state(server, state) do
+    GenServer.cast(server, {:initialize_state, state})
   end
 
 end

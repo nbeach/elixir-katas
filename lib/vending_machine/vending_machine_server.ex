@@ -4,6 +4,10 @@ defmodule VendingMachineServer do
 
   defstruct coin_return: [], coins: [], credit: [], message: nil, inventory: []
 
+  def start_link(opts) do
+    GenServer.start_link(VendingMachineServer,  %VendingMachineServer{})
+  end
+
   @impl true
   def init(state) do
     {:ok, state}
@@ -67,6 +71,11 @@ defmodule VendingMachineServer do
       |> update!(:coin_return, &(state.credit ++ &1))
       |> put(:credit, [])
 
+    {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_cast({:initialize_state, new_state}, state) do
     {:noreply, new_state}
   end
 
